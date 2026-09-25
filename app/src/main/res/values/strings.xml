@@ -84,4 +84,6 @@
     <string name="app_contacts">no socials yet</string>
     <string name="report">Report</string>
     <string name="comments">Comments (%1$d)</string>
+    <string name="expand_desc">expand ▼</string>
+    <string name="collapse_desc">collapse ▲</string>
 </resources>

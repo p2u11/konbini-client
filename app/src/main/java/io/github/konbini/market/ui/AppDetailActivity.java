@@ -57,7 +57,7 @@ public class AppDetailActivity extends Activity {
 
     private View header;
     private ImageView imgIcon;
-    private TextView txtName, txtAuthor, txtMeta, txtDesc;
+    private TextView txtName, txtAuthor, txtMeta, txtDesc, txtToggle;
     private ImageView imgAndroidHeaderLogo;
     private TextView txtDownloadsInfo, txtReviewsInfo, txtHeaderRating, txtreviewinfo;
     private RatingBar ratingHeader, ratingAddReview;
@@ -87,6 +87,8 @@ public class AppDetailActivity extends Activity {
 
     private App app;
     private Boolean appInitialized = false;
+
+    private boolean descCollapsed = true;
 
     private Api api;
 
@@ -146,6 +148,7 @@ public class AppDetailActivity extends Activity {
         txtReviewsInfo = (TextView) header.findViewById(R.id.txtReviewsInfo);
         txtMeta = (TextView) header.findViewById(R.id.txtMeta);
         txtDesc = (TextView) header.findViewById(R.id.txtDesc);
+        txtToggle = (TextView) header.findViewById(R.id.toggleDescriptionTextView);
         txtScreensTitle = (TextView) header.findViewById(R.id.txtScreensTitle);
         screensScroll = (HorizontalScrollView) header.findViewById(R.id.screensScroll);
         screensContainer = (LinearLayout) header.findViewById(R.id.screensContainer);
@@ -387,7 +390,8 @@ public class AppDetailActivity extends Activity {
                 AppDetailActivity.this.app = o;
                 String name = o.name;
                 final String dev = o.author;
-                String desc = o.description;
+                final String desc = o.description;
+                final String shortDesc = desc.substring(0, 100) + "...";
                 String icon = o.icon;
                 currentIconFile = icon;
 
@@ -427,7 +431,20 @@ public class AppDetailActivity extends Activity {
                         startActivity(intent);
                     }
                 });
-                txtDesc.setText(desc);
+                if (desc.length() > 100) {
+                    txtDesc.setText(shortDesc);
+                    txtToggle.setVisibility(View.VISIBLE);
+                    txtToggle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            descCollapsed = !descCollapsed;
+                            txtToggle.setText(descCollapsed ? R.string.expand_desc : R.string.collapse_desc);
+                            txtDesc.setText(descCollapsed ? shortDesc : desc);
+                        }
+                    });
+                } else {
+                    txtDesc.setText(desc);
+                }
                 txtDownloadsInfo.setText(downloads + " " + getString(R.string.downloads_count));
                 txtReviewsInfo.setText(reviewCount + " " + getString(R.string.reviews_count));
                 txtHeaderRating.setText(String.format(Locale.US, "%.1f", avgRating));

@@ -81,4 +81,9 @@
     <string name="version">Версия:</string>
     <string name="report">Пожаловаться</string>
     <string name="comments">Комментарии (%1$d)</string>
+    <string name="versions">Версии</string>
+    <string name="collapse_desc">свернуть ▲</string>
+    <string name="expand_desc">развернуть ▼</string>
+    <string name="details">Подробнее</string>
+    <string name="app_contacts"></string>
 </resources>

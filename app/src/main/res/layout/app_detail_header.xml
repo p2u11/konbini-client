@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -45,11 +46,20 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/toggleDescriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="expand ▼"
+            android:textAlignment="textEnd"
+            android:visibility="gone"
+            tools:textColor="?android:attr/textColorLink" />
+
+        <TextView
             android:id="@+id/txtMeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text=""
+            android:text="Versions: 1.0 - 1.3"
             android:textColor="#555555" />
     </LinearLayout>
 
