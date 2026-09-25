@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/version_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version Name (version code)"
+        android:textColor="#FF000000"
+        android:textSize="18sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:id="@+id/supported_android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:text="Android 2.3+ (API xx)"
+        android:textColor="#80000000"
+        android:textSize="15sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:id="@+id/supported_abis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:text="ABIs: noarch"
+        android:textColor="#80000000"
+        android:textSize="15sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"/>
+
+</LinearLayout>

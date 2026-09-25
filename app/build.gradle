@@ -1,0 +1,35 @@
+apply plugin: 'com.android.application'
+
+dependencies {
+    // This older version is fully compatible with ancient API levels
+    //noinspection NewerVersionAvailable
+    compile 'com.loopj.android:android-async-http:1.4.9'
+}
+
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "25.0.3"
+
+//    namespace 'io.github.konbini.market'
+
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId "io.github.konbini.market"
+        minSdkVersion 4
+        //noinspection ExpiredTargetSdkVersion
+        targetSdkVersion 21
+    }
+
+    aaptOptions {
+        cruncherEnabled = false
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
+        }
+    }
+}

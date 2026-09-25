@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f2f2f2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#f2f2f2">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@drawable/bg_bottombar"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+            <ImageButton
+                android:id="@+id/btnHome"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/bg_market_icon"
+                android:contentDescription="@string/app_name" />
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/btnHome"
+                android:layout_marginLeft="-3.0dp"
+                android:text="@string/downloads1"
+                android:textColor="#ffffff"
+                android:textSize="38sp"
+                android:textStyle="bold"
+                android:shadowColor="#88000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="2.75" />
+
+            <ImageButton
+                android:id="@+id/btnSearch"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/search"
+                android:src="@drawable/ic_search_selector" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:cacheColorHint="#00000000"
+            android:divider="#e0e0e0"
+            android:dividerHeight="1dp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/txtLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/loading"
+                android:textColor="#111111" />
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>

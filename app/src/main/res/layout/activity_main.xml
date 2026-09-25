@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e9e9e9">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#e9e9e9">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@drawable/bg_bottombar"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+            <ImageButton
+                android:id="@+id/logo"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/bg_market_icon_selector"
+                android:contentDescription="@string/app_name" />
+
+            <LinearLayout
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/logo"
+                android:layout_toRightOf="@id/logo"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgAndroidWord"
+                    android:layout_width="45dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginBottom="-5dp"
+                    android:scaleType="fitStart"
+                    android:src="@android:color/transparent" />
+
+                <TextView
+                    android:id="@+id/txtMarket"
+                    android:layout_width="245dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-3dp"
+                    android:layout_marginTop="-10dp"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:text="@string/store_name"
+                    android:textColor="#ffffff"
+                    android:textSize="38sp"
+                    android:shadowColor="#88000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="2.75" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnSearch"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/search"
+                android:src="@drawable/ic_search_selector" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/tabRow"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="#e9e9e9"
+            android:padding="0dp">
+
+            <Button
+                android:id="@+id/btnApps"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_button"
+                android:text="@string/apps"
+                android:textColor="#303030"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/btn_strip_divider" />
+
+            <Button
+                android:id="@+id/btnGames"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_button"
+                android:text="@string/games"
+                android:textColor="#303030"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/btn_strip_divider" />
+
+            <Button
+                android:id="@+id/btnDownloads"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_button"
+                android:text="@string/downloads"
+                android:textColor="#303030"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#f2f2f2"
+            android:cacheColorHint="#00000000"
+            android:divider="#dedede"
+            android:dividerHeight="1dp"
+            android:listSelector="@drawable/bg_press_item" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/loading"
+                android:textColor="#111111"/>
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>
