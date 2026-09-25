@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 
@@ -28,6 +29,9 @@ public class LoginActivity extends Activity {
         super.onCreate(b);
         LocaleHelper.applySavedLocale(this);
         setContentView(R.layout.activity_login);
+
+        Toast.makeText(this, "Social features not implemented yet!", Toast.LENGTH_LONG).show();
+        this.finish();
 
         edtUser = (EditText) findViewById(R.id.edtUser);
         edtPass = (EditText) findViewById(R.id.edtPass);
