@@ -58,6 +58,7 @@ public class CategoryAppsActivity extends Activity {
         final String query = getIntent().getStringExtra("query");
         final String type = getIntent().getStringExtra("type");
         final boolean isGame = getIntent().getBooleanExtra("is_game", false);
+        final ArrayList<Integer> appIds = getIntent().getIntegerArrayListExtra("app_ids");
 
         titleView = (TextView) findViewById(R.id.txtTitle);
         subtitleView = (TextView) findViewById(R.id.txtSubtitle);
