@@ -17,6 +17,7 @@ import com.loopj.android.http.*;
 import org.apache.http.Header;
 
 import io.github.konbini.market.net.Http;
+import io.github.konbini.market.ui.ServerMetadata;
 import io.github.konbini.market.util.Prefs;
 
 import org.apache.http.client.HttpClient;
@@ -47,6 +48,9 @@ public class Api {
 
     private SyncHttpClient client = new SyncHttpClient();
 
+    private ServerMetadata serverMetadata;
+    private boolean cacheOutdated = false;
+
     private Api(String base_url) {
         if (base_url != null)
             this.base_url = base_url;
@@ -65,10 +69,47 @@ public class Api {
 
         Log.d("Supported ABIs", supportedAbis);
 
-        platformQueries = String.format(Locale.ENGLISH, "api=%d&abis=%s", sdk, supportedAbis);
+        // platformQueries = String.format(Locale.ENGLISH, "api=%d&abis=%s", sdk, supportedAbis);
+        fetchServerMetadata();
     }
 
-    public static synchronized Api getInstance(String base_url) {
+    private void fetchServerMetadata() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = String.format(Locale.ENGLISH, "%s/api/meta.json", this.base_url);
+        Log.d("Api", "Metadata check");
+        Log.d("Api", url);
+
+        client.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                Log.i("Api", String.format(Locale.ENGLISH, "Got %d status code, yay!", statusCode));
+                try {
+                    String result = new String(responseBody, "UTF-8");
+                    Log.d("Api", "meta.json onSuccess: " + result);
+                    serverMetadata = new ServerMetadata(new JSONObject(result));
+                    Log.d("Api", "Server last updated: " + serverMetadata.getLastUpdated());
+
+                    long lastUpdated = Prefs.getServerLastUpdated(context);
+                    if (lastUpdated != serverMetadata.getLastUpdated()) {
+                        cacheOutdated = true;
+                        Log.d("Api", "fetchServerMetadata: outdated cache!");
+                        Prefs.setServerLastUpdated(context, serverMetadata.getLastUpdated());
+                        Prefs.clearCache(context);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e("Api", String.format(Locale.ENGLISH, "Got %d status code... :( (line 199)", statusCode));
+                Log.w("Api", "Failed to fetch server metadata");
+            }
+        });
+    }
+
+    static synchronized Api getInstance(String base_url) {
         if (instance == null) {
             instance = new Api(base_url);
         }
@@ -88,60 +129,34 @@ public class Api {
 
     public String getSupportedAbis() { return this.supportedAbis; }
 
-    private SharedPreferences cache() {
-        return context == null ? null : context.getSharedPreferences(CACHE_PREFS, Context.MODE_PRIVATE);
-    }
-
-    private String cacheKey(String suffix) {
-        return "response_" + base_url.replaceAll("[^A-Za-z0-9]", "_") + "_" + suffix;
-    }
-
-    private String readCached(String suffix, boolean freshOnly) {
-        SharedPreferences preferences = cache();
-        if (preferences == null) return null;
-
-        String key = cacheKey(suffix);
-        String value = preferences.getString(key, null);
-        if (value == null) return null;
-
-        long savedAt = preferences.getLong(key + "_at", 0L);
-        if (freshOnly && System.currentTimeMillis() - savedAt > CACHE_TTL_MS) return null;
-        return value;
-    }
-
-    private void writeCached(String suffix, String value) {
-        SharedPreferences preferences = cache();
-        if (preferences == null || value == null) return;
-
-        String key = cacheKey(suffix);
-        preferences.edit().putString(key, value).putLong(key + "_at", System.currentTimeMillis()).commit();
-    }
-
     // Get top apps
     public ArrayList<AppShort> getTopApps() {
-        String url = base_url + "/api/apps.json";
+        final String url = base_url + "/api/apps.json";
         final ArrayList<AppShort> apps = new ArrayList<>();
         final boolean[] success = {false};
         if (memoryApps != null && System.currentTimeMillis() - memoryAppsAt <= CACHE_TTL_MS) {
             return new ArrayList<>(memoryApps);
         }
 
-        String cached = readCached("top_apps", true);
+        String cached = Prefs.readCache(context, url);
         if (cached != null && parseApps(cached, apps)) {
             rememberApps(apps);
+            Log.d("getTopApps@Api", "Using cached response");
             return apps;
         }
 
+        Log.d("getTopApps@Api", "No cache found.");
+
         client.get(url, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
-                Log.i("Api", String.format(Locale.ENGLISH, "Got %d status code, yay!", statusCode));
-                String result;
+                @Override
+                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                    Log.i("Api", String.format(Locale.ENGLISH, "Got %d status code, yay!", statusCode));
+                    String result;
                 JSONArray array;
                 try {
                     result = new String(responseBody, "UTF-8");
                     Log.d("Api", "onSuccess: "+result);
-                    writeCached("top_apps", result);
+                    Prefs.writeCache(context, url, result);
                     success[0] = parseApps(result, apps);
                     if (success[0]) rememberApps(apps);
                 } catch (Exception e) {
@@ -155,13 +170,6 @@ public class Api {
             }
         });
 
-        if (!success[0]) {
-            String stale = readCached("top_apps", false);
-            if (stale != null && parseApps(stale, apps)) {
-                rememberApps(apps);
-                return apps;
-            }
-        }
         return success[0] ? apps : null;
     }
 
@@ -225,13 +233,12 @@ public class Api {
     }
 
     public App getApp(final int app_id) {
-        String url = String.format(Locale.ENGLISH, "%s/api/apps/%d.json", base_url, app_id);
+        final String url = String.format(Locale.ENGLISH, "%s/api/apps/%d.json", base_url, app_id);
         Log.d("Api", "line 178");
         Log.d("Api", url);
-        AsyncHttpClient client = new SyncHttpClient();
         final App[] app = new App[1];
         final boolean[] success = {false};
-        String cached = readCached("app_" + app_id, true);
+        String cached = Prefs.readCache(context, url);
         if (cached != null) {
             try {
                 return new App(new JSONObject(cached));
@@ -249,7 +256,7 @@ public class Api {
                 try {
                     result = new String(responseBody, "UTF-8");
                     Log.d("Api", "onSuccess: "+result);
-                    writeCached("app_" + app_id, result);
+                    Prefs.writeCache(context, url, result);
                     app[0] = new App(new JSONObject(result));
                     success[0] = true;
                 } catch (Exception e) {
@@ -262,17 +269,6 @@ public class Api {
                 Log.e("Api", String.format(Locale.ENGLISH, "Got %d status code... :( (line 199)", statusCode));
             }
         });
-        if (!success[0] || app[0] == null) {
-            String stale = readCached("app_" + app_id, false);
-            if (stale != null) {
-                try {
-                    app[0] = new App(new JSONObject(stale));
-                    success[0] = true;
-                } catch (Exception e) {
-                    Log.w("Api", "Ignoring invalid cached app response", e);
-                }
-            }
-        }
         Log.d("Api", "getApp: " + (app[0] == null ? "null" : app[0].versions.size()));
         return success[0] ? app[0] : null;
     }

@@ -3,13 +3,19 @@ package io.github.konbini.market.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
+import android.util.Log;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Prefs {
     private static final String P = "konbini_prefs";
+    private static final String CACHE_PREFS = "api_response_cache";
     private static final String AUTH_SECRET = "fghjcbvnmbfdjkghhjdfnbvlkdfshgujirdgehty45uiy4t3y578347yr8ioue4roti7u340895784908itujoldrfikskjfl";
 
     private static SharedPreferences sp(Context c) {
@@ -214,4 +220,38 @@ public class Prefs {
         sp(c).edit().putLong("last_analytics_sent_at", v).commit();
     }
 
+    public static long getServerLastUpdated(Context c) {
+        return sp(c).getLong("server_last_updated", 0L);
+    }
+
+    public static void setServerLastUpdated(Context c, long v) {
+        sp(c).edit().putLong("server_last_updated", v).commit();
+    }
+
+    public static void writeCache(Context c, String fullUrl, String jsonResponse) {
+        if (c == null || fullUrl == null || fullUrl.length() == 0 || jsonResponse == null) return;
+        c.getSharedPreferences(CACHE_PREFS, Context.MODE_PRIVATE)
+                .edit()
+                .putString("response_url_" + fullUrl, jsonResponse)
+                .commit();
+    }
+
+    public static String readCache(Context c, String fullUrl) {
+        if (c == null || fullUrl == null || fullUrl.length() == 0) return null;
+        Log.d("readCache@Prefs", "Reading URL " + fullUrl);
+        return c.getSharedPreferences(CACHE_PREFS, Context.MODE_PRIVATE)
+                .getString("response_url_" + fullUrl, null);
+    }
+
+    public static boolean hasCache(Context c, String fullUrl) {
+        if (c == null || fullUrl == null || fullUrl.length() == 0) return false;
+        return c.getSharedPreferences(CACHE_PREFS, Context.MODE_PRIVATE)
+                .contains("response_url_" + fullUrl);
+    }
+
+    public static void clearCache(Context c) {
+        if (c == null) return;
+        Log.d("clearCache@Prefs", "Clearing cache!");
+        c.getSharedPreferences(CACHE_PREFS, Context.MODE_PRIVATE).edit().clear().commit();
+    }
 }
