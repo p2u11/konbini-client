@@ -3,6 +3,7 @@ package io.github.konbini.market.ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -129,7 +130,7 @@ public class CategoryAppsActivity extends Activity {
         });
 
         updateTabButtons();
-        loadApps(type, query, isGame);
+        loadApps(type, query, isGame, appIds);
     }
 
     protected void onResume() {
@@ -140,7 +141,7 @@ public class CategoryAppsActivity extends Activity {
         }
     }
 
-    private void loadApps(final String type, final String query, final boolean isGame) {
+    private void loadApps(final String type, final String query, final boolean isGame, final ArrayList<Integer> appIds) {
         showLoading(true);
         final Api api = Api.getInstance(CategoryAppsActivity.this);
         new AsyncTask<Void, Void, ArrayList<AppShort>>() {
@@ -153,7 +154,17 @@ public class CategoryAppsActivity extends Activity {
                             apps = api.getAuthorApps(query);
                             break;
                         case "category":
-                            apps = api.getCategoryApps(query);
+                            if (appIds == null) {
+                                apps = api.getCategoryApps(query);
+                            } else {
+                                ArrayList<AppShort> source = api.getTopApps();
+                                if (source == null) return null;
+                                HashSet<Integer> selectedIds = new HashSet<>(appIds);
+                                apps = new ArrayList<>();
+                                for (AppShort app : source) {
+                                    if (selectedIds.contains(app.id)) apps.add(app);
+                                }
+                            }
                             break;
                         default:
                             return null;

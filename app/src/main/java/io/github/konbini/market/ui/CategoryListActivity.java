@@ -2,6 +2,7 @@ package io.github.konbini.market.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -156,11 +157,18 @@ public class CategoryListActivity extends Activity {
                     int idx = position - list.getHeaderViewsCount();
                     if (idx < 0 || idx >= items.size()) return;
                     CategoryItem item = items.get(idx);
+                    ArrayList<Integer> appIds = new ArrayList<>();
+                    for (AppItem app : allApps) {
+                        if (item.code.length() == 0 || item.code.equals(app.categoryCode)) {
+                            appIds.add(app.id);
+                        }
+                    }
                     Intent i = new Intent(CategoryListActivity.this, CategoryAppsActivity.class);
                     i.putExtra("is_game", isGame);
                     i.putExtra("type", "category");
                     i.putExtra("query", item.code);
                     i.putExtra("title", item.label);
+                    i.putIntegerArrayListExtra("app_ids", appIds);
                     startActivity(i);
                 }
             });
@@ -186,18 +194,21 @@ public class CategoryListActivity extends Activity {
                     JSONArray appsArr = new JSONArray(appsStr);
 
                     outCats.add(new CategoryItem("", getString(isGame ? R.string.all_games : R.string.all_apps)));
+                    HashSet<String> categoryCodes = new HashSet<>();
                     for (int i = 0; i < arr.length(); i++) {
                         if (isCancelled()) return false;
                         JSONObject o = arr.getJSONObject(i);
-                        outCats.add(new CategoryItem(o.optString("cat_id", o.optString("id", "")), o.optString("name", "")));
+                        String code = o.optString("cat_id", o.optString("id", ""));
+                        outCats.add(new CategoryItem(code, o.optString("name", "")));
+                        if (code.length() > 0) categoryCodes.add(code);
                     }
 
                     int deviceApi = Build.VERSION.SDK_INT;
                     for (int i = 0; i < appsArr.length(); i++) {
                         if (isCancelled()) return false;
                         JSONObject o = appsArr.getJSONObject(i);
-                        boolean appIsGame = o.optBoolean("is_game", o.optBoolean("isGame", false));
-                        if (appIsGame != isGame) continue;
+                        String categoryCode = o.optString("category_code", o.optString("categoryCode", o.optString("category", "other_apps")));
+                        if (!categoryCodes.contains(categoryCode)) continue;
 
                         AppItem a = new AppItem();
                         a.id = o.optInt("id", 0);
@@ -206,8 +217,8 @@ public class CategoryListActivity extends Activity {
                         a.icon = o.optString("icon", "");
                         a.api = o.optInt("api", 1);
                         a.packageName = o.optString("package", o.optString("package_name", o.optString("packageName", "")));
-                        a.isGame = appIsGame;
-                        a.categoryCode = o.optString("category_code", o.optString("categoryCode", o.optString("category", "other_apps")));
+                        a.isGame = isGame;
+                        a.categoryCode = categoryCode;
                         a.categoryLabel = o.optString("category_label", o.optString("categoryLabel", a.categoryCode));
                         a.rating = (float) o.optDouble("rating", 0.0);
                         a.downloads = o.optInt("downloads", 0);
