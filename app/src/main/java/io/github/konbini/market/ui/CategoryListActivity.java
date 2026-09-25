@@ -186,11 +186,9 @@ public class CategoryListActivity extends Activity {
             protected Boolean doInBackground(Void... params) {
                 try {
                     if (isCancelled()) return false;
-                    String categoriesEndpoint = isGame ? "/api/categories/games.json" : "/api/categories/apps.json";
-                    String s = Http.getString(Api.baseUrl(CategoryListActivity.this) + categoriesEndpoint);
+                    JSONArray arr = io.github.konbini.market.api.Api.getInstance(CategoryListActivity.this).getCategories(isGame);
                     String appsStr = Http.getString(Api.baseUrl(CategoryListActivity.this) + "/api/apps.json");
-                    if (s == null || appsStr == null) return false;
-                    JSONArray arr = new JSONArray(s);
+                    if (arr == null || appsStr == null) return false;
                     JSONArray appsArr = new JSONArray(appsStr);
 
                     outCats.add(new CategoryItem("", getString(isGame ? R.string.all_games : R.string.all_apps)));

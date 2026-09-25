@@ -207,9 +207,43 @@ public class Api {
         }
     }
 
-//    public ArrayList<> getAppCategories() {
-//
-//    }
+    public JSONArray getCategories(boolean isGame) {
+        final String url = base_url + (isGame
+                ? "/api/categories/games.json"
+                : "/api/categories/apps.json");
+
+        String cached = Prefs.readCache(context, url);
+        if (cached != null) {
+            try {
+                Log.d("getCategories@Api", "Using cached response");
+                return new JSONArray(cached);
+            } catch (Exception e) {
+                Log.w("Api", "Ignoring invalid cached categories response", e);
+            }
+        }
+
+        Log.d("getCategories@Api", "No cache found.");
+
+        final JSONArray[] categories = new JSONArray[1];
+        client.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                try {
+                    String result = new String(responseBody, "UTF-8");
+                    categories[0] = new JSONArray(result);
+                    Prefs.writeCache(context, url, result);
+                } catch (Exception e) {
+                    Log.e("Api", "Failed to parse categories response", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e("Api", "Failed to fetch categories", error);
+            }
+        });
+        return categories[0];
+    }
 
     public ArrayList<AppShort> getAuthorApps(String author) {
         if (author == null || author.length() == 0) return this.getTopApps();

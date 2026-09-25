@@ -148,7 +148,6 @@ public class CategoryAppsActivity extends Activity {
         new AsyncTask<Void, Void, ArrayList<AppShort>>() {
             protected ArrayList<AppShort> doInBackground(Void... v) {
                 try {
-//                    String url = Api.baseUrl(CategoryAppsActivity.this) + "/api/apps?is_game=" + (isGame ? "true" : "false");
                     ArrayList<AppShort> apps;
                     switch (type) {
                         case "author":
@@ -171,16 +170,6 @@ public class CategoryAppsActivity extends Activity {
                             return null;
                     }
                     return apps;
-//                    String s = Http.getString(url);
-//                    if (s == null) return null;
-//                    JSONArray arr = new JSONArray(s);
-//                    ArrayList<AppShort> out = new ArrayList<>();
-//                    int deviceApi = Build.VERSION.SDK_INT;
-//                    for (int i = 0; i < arr.length(); i++) {
-//                        JSONObject o = arr.getJSONObject(i);
-//                        out.add(new AppShort(o));
-//                    }
-//                    return out;
                 } catch (Exception e) { return null; }
             }
             protected void onPostExecute(ArrayList<AppShort> out) {
