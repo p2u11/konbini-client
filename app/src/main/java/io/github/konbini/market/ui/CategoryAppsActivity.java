@@ -142,6 +142,7 @@ public class CategoryAppsActivity extends Activity {
 
     private void loadApps(final String type, final String query, final boolean isGame) {
         showLoading(true);
+        final Api api = Api.getInstance(CategoryAppsActivity.this);
         new AsyncTask<Void, Void, ArrayList<AppShort>>() {
             protected ArrayList<AppShort> doInBackground(Void... v) {
                 try {
@@ -149,10 +150,10 @@ public class CategoryAppsActivity extends Activity {
                     ArrayList<AppShort> apps;
                     switch (type) {
                         case "author":
-                            apps = Api.getInstance(CategoryAppsActivity.this).getAuthorApps(query);
+                            apps = api.getAuthorApps(query);
                             break;
                         case "category":
-                            apps = Api.getInstance(CategoryAppsActivity.this).getCategoryApps(query);
+                            apps = api.getCategoryApps(query);
                             break;
                         default:
                             return null;

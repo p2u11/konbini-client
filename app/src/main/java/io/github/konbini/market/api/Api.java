@@ -218,7 +218,10 @@ public class Api {
     }
 
     public ArrayList<AppShort> getCategoryApps(String category) {
-        if (category == null || category.length() == 0) return this.getTopApps();
+        if (category == null || category.length() == 0) {
+            Log.e("getCategoryApps@Api", "Category is null or empty, returning all apps");
+            return this.getTopApps();
+        }
         return filterApps(getTopApps(), category, false);
     }
 

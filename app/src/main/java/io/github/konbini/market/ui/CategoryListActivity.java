@@ -189,7 +189,7 @@ public class CategoryListActivity extends Activity {
                     for (int i = 0; i < arr.length(); i++) {
                         if (isCancelled()) return false;
                         JSONObject o = arr.getJSONObject(i);
-                        outCats.add(new CategoryItem(o.optString("cat_id", ""), o.optString("name", "")));
+                        outCats.add(new CategoryItem(o.optString("cat_id", o.optString("id", "")), o.optString("name", "")));
                     }
 
                     int deviceApi = Build.VERSION.SDK_INT;
