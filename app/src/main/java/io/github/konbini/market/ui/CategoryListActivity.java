@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import io.github.konbini.market.R;
+import io.github.konbini.market.api.App;
+import io.github.konbini.market.api.AppShort;
 import io.github.konbini.market.model.AppItem;
 import io.github.konbini.market.net.Api;
 import io.github.konbini.market.net.Http;
@@ -186,10 +188,9 @@ public class CategoryListActivity extends Activity {
             protected Boolean doInBackground(Void... params) {
                 try {
                     if (isCancelled()) return false;
-                    JSONArray arr = io.github.konbini.market.api.Api.getInstance(CategoryListActivity.this).getCategories(isGame);
-                    String appsStr = Http.getString(Api.baseUrl(CategoryListActivity.this) + "/api/apps.json");
-                    if (arr == null || appsStr == null) return false;
-                    JSONArray appsArr = new JSONArray(appsStr);
+                    io.github.konbini.market.api.Api api = io.github.konbini.market.api.Api.getInstance(CategoryListActivity.this);
+                    JSONArray arr = api.getCategories(isGame);
+                    ArrayList<AppShort> apps = api.getTopApps();
 
                     outCats.add(new CategoryItem("", getString(isGame ? R.string.all_games : R.string.all_apps)));
                     HashSet<String> categoryCodes = new HashSet<>();
@@ -202,25 +203,25 @@ public class CategoryListActivity extends Activity {
                     }
 
                     int deviceApi = Build.VERSION.SDK_INT;
-                    for (int i = 0; i < appsArr.length(); i++) {
+                    for (int i = 0; i < apps.size(); i++) {
                         if (isCancelled()) return false;
-                        JSONObject o = appsArr.getJSONObject(i);
-                        String categoryCode = o.optString("category_code", o.optString("categoryCode", o.optString("category", "other_apps")));
+                        AppShort o = apps.get(i);
+                        String categoryCode = o.categoryCode == null ? "other_apps" : o.categoryCode;
                         if (!categoryCodes.contains(categoryCode)) continue;
 
                         AppItem a = new AppItem();
-                        a.id = o.optInt("id", 0);
-                        a.name = o.optString("name", "");
-                        a.developer = o.optString("developer", o.optString("author", ""));
-                        a.icon = o.optString("icon", "");
-                        a.api = o.optInt("api", 1);
-                        a.packageName = o.optString("package", o.optString("package_name", o.optString("packageName", "")));
+                        a.id = o.id;
+                        a.name = o.name;
+                        a.developer = o.author;
+                        a.icon = o.icon;
+                        a.api = o.api;
+                        a.packageName = o.packageName;
                         a.isGame = isGame;
                         a.categoryCode = categoryCode;
-                        a.categoryLabel = o.optString("category_label", o.optString("categoryLabel", a.categoryCode));
-                        a.rating = (float) o.optDouble("rating", 0.0);
-                        a.downloads = o.optInt("downloads", 0);
-                        a.description = o.optString("description", "");
+                        a.categoryLabel = o.categoryLabel;
+                        a.rating = (float) o.rating;
+                        a.downloads = o.downloads;
+                        a.description = o.description;
                         if (a.api <= deviceApi) outApps.add(a);
                     }
 
