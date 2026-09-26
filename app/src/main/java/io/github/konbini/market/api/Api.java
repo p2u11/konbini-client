@@ -32,7 +32,7 @@ import java.util.Locale;
  */
 
 public class Api {
-    private static String default_base_url = "http://apk.pyt.pp.ua";
+    private static String default_base_url = "http://konbini.lol";
     private static final String CACHE_PREFS = "api_response_cache";
     private static final long CACHE_TTL_MS = 5 * 60 * 1000L;
     private String base_url = default_base_url;
