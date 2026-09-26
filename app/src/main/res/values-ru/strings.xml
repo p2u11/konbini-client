@@ -85,5 +85,9 @@
     <string name="collapse_desc">свернуть ▲</string>
     <string name="expand_desc">развернуть ▼</string>
     <string name="details">Подробнее</string>
-    <string name="app_contacts"></string>
+    <string name="rating">Оценка: %d</string>
+    <string name="your_review">Ваш отзыв</string>
+    <string name="post_review">Оставить отзыв</string>
+    <string name="send_review">Отправить</string>
+    <string name="cancel_review">Отмена</string>
 </resources>

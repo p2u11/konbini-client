@@ -591,25 +591,25 @@ public class AppDetailActivity extends Activity {
         layout.setPadding(pad, pad, pad, pad);
 
         TextView lbl = new TextView(this);
-        lbl.setText(isRu() ? "Оценка: " + presetRating : "Rating: " + presetRating);
+        lbl.setText(String.format(getString(R.string.rating), presetRating));
         layout.addView(lbl);
 
         final EditText edt = new EditText(this);
-        edt.setHint(isRu() ? "Ваш отзыв" : "Your review");
+        edt.setHint(getString(R.string.your_review));
         edt.setMinLines(3);
         layout.addView(edt);
 
         new AlertDialog.Builder(this)
-                .setTitle(isRu() ? "Оставить отзыв" : "Add review")
+                .setTitle(getString(R.string.post_review))
                 .setView(layout)
-                .setPositiveButton(isRu() ? "Отправить" : "Send", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.send_review), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String text = edt.getText().toString().trim();
                         sendReview(text, presetRating);
                     }
                 })
-                .setNegativeButton(isRu() ? "Отмена" : "Cancel", null)
+                .setNegativeButton(getString(R.string.cancel_review), null)
                 .show();
     }
 
@@ -625,6 +625,7 @@ public class AppDetailActivity extends Activity {
             @Override
             protected String doInBackground(Void... v) {
                 try {
+                    // TODO
                     if (true) return null;
                     String url = ""; //Api.baseUrl(AppDetailActivity.this) + "/api/app/" + appId + "/review";
                     JSONObject o = new JSONObject();

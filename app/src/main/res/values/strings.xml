@@ -86,4 +86,9 @@
     <string name="comments">Comments (%1$d)</string>
     <string name="expand_desc">expand ▼</string>
     <string name="collapse_desc">collapse ▲</string>
+    <string name="rating">Rating: %d</string>
+    <string name="your_review">Your review</string>
+    <string name="post_review">Post review</string>
+    <string name="send_review">Send</string>
+    <string name="cancel_review">Cancel</string>
 </resources>
